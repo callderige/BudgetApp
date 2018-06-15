@@ -17,16 +17,16 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Fragment fragment;
-        switch (position + 1) {
-            case 1: {
+        switch (position) {
+            case 0: {
                 fragment = new DashboardFragment();
                 break;
             }
-            case 2: {
+            case 1: {
                 fragment = new ExpensesFragment();
                 break;
             }
-            case 3: {
+            case 2: {
                 fragment = new BillsFragment();
                 break;
             }
