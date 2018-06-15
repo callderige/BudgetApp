@@ -82,4 +82,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        //For mViewPager.getCurrentItem() value
+        //0 = Dashboard fragment, 1 = Expenses fragment, 2 = Bills fragment
+        switch(mViewPager.getCurrentItem()) {
+            case 0: {
+                finish();
+            }
+            default: {
+                mViewPager.setCurrentItem(0);
+            }
+        }
+    }
+
 }
