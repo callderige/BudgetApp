@@ -37,22 +37,56 @@ public class Bill {
         this.paid = paid;
     }
 
+    /*
+        Get methods
+     */
     public int getId() {
         return id;
     }
+
     public String getName() {
         return name;
     }
+
     public double getCost() {
         return cost;
     }
     public double getFund() {
         return fund;
     }
+
     public String getDue() {
         return due;
     }
+
     public boolean getPaid() {
         return paid;
+    }
+
+    /*
+        Set methods
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
+
+    public void setFund(double fund) {
+        this.fund = fund;
+    }
+
+    public void setDue(String due) {
+        this.due = due;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
     }
 }
