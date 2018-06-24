@@ -14,21 +14,21 @@ public class Bill {
     private double cost;
     private double fund;
     private String due;
-    private boolean paid;
+    private int paid;
 
     public static final String CREATE_TABLE_BILLS =
             "CREATE TABLE " + BILLS_TABLE_NAME + "("
                     + COLUMN_BILL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_BILL_NAME + " TEXT,"
-                    + COLUMN_BILL_COST + " NUMERIC,"
-                    + COLUMN_BILL_FUND + " NUMERIC,"
+                    + COLUMN_BILL_COST + " INTEGER,"
+                    + COLUMN_BILL_FUND + " INTEGER,"
                     + COLUMN_BILL_DUE + " TEXT,"
-                    + COLUMN_BILL_PAID + " INTEGER,"
+                    + COLUMN_BILL_PAID + " INTEGER"
                     + ")";
 
     public Bill() {}
 
-    public Bill(int id, String name, double cost, double fund, String due, boolean paid) {
+    public Bill(int id, String name, double cost, double fund, String due, int paid) {
         this.id = id;
         this.name = name;
         this.cost = cost;
@@ -59,7 +59,7 @@ public class Bill {
         return due;
     }
 
-    public boolean getPaid() {
+    public int getPaid() {
         return paid;
     }
 
@@ -86,7 +86,7 @@ public class Bill {
         this.due = due;
     }
 
-    public void setPaid(boolean paid) {
+    public void setPaid(int paid) {
         this.paid = paid;
     }
 }

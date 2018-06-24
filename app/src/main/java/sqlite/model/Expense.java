@@ -20,7 +20,7 @@ public class Expense {
                     + COLUMN_EXPENSE_NAME + " TEXT,"
                     + COLUMN_EXPENSE_SPENT + " NUMERIC,"
                     + COLUMN_EXPENSE_LIMIT + " NUMERIC,"
-                    + COLUMN_EXPENSE_TYPE + " TEXT,"
+                    + COLUMN_EXPENSE_TYPE + " TEXT"
                     + ")";
 
     public Expense() {}
