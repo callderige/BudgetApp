@@ -26,6 +26,8 @@ public class Bill {
                     + COLUMN_BILL_PAID + " INTEGER"
                     + ")";
 
+    public static final String DROP_TABLE_BILLS = "DROP TABLE IF EXISTS " + BILLS_TABLE_NAME;
+
     public Bill() {}
 
     public Bill(int id, String name, double cost, double fund, String due, int paid) {
@@ -51,6 +53,7 @@ public class Bill {
     public double getCost() {
         return cost;
     }
+
     public double getFund() {
         return fund;
     }

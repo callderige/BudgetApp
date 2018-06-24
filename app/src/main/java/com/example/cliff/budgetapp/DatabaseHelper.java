@@ -17,10 +17,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
-
-        SQLiteDatabase database = this.getWritableDatabase();
-        database.execSQL(Bill.CREATE_TABLE_BILLS);
-        database.execSQL(Expense.CREATE_TABLE_EXPENSES);
     }
 
     public void onCreate(SQLiteDatabase database) {
@@ -29,15 +25,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        database.execSQL("DROP TABLE " + Bill.BILLS_TABLE_NAME);
-        database.execSQL("DROP TABLE " + Expense.EXPENSES_TABLE_NAME);
+        database.execSQL(Bill.DROP_TABLE_BILLS);
+        database.execSQL(Expense.DROP_TABLE_EXPENSE);
     }
 
-    public void dropTables() {
+    public void recreateTables() {
         SQLiteDatabase database = this.getWritableDatabase();
 
-        database.execSQL("DROP TABLE IF EXISTS " + Bill.BILLS_TABLE_NAME);
-        database.execSQL("DROP TABLE IF EXISTS " + Expense.EXPENSES_TABLE_NAME);
+        database.execSQL(Bill.DROP_TABLE_BILLS);
+        database.execSQL(Expense.DROP_TABLE_EXPENSE);
+
+        database.execSQL(Bill.CREATE_TABLE_BILLS);
+        database.execSQL(Expense.CREATE_TABLE_EXPENSES);
     }
 
     /**
@@ -46,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param cost How much the bill will cost when do
      * @param fund Current money set aside for bill
      * @param due Date bill is due
-     * @param paid If bill is paid
+     * @param paid If bill is paid; 0 for no, 1 for yes
      * @return the Id of the newly created bill, returns -1 if an error occurred
      */
     public long createBill(String name, double cost, double fund, String due, int paid) {
@@ -72,23 +71,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public List<Bill> getAllBills() {
         List<Bill> bills = new ArrayList<>();
-
-        final String SELECT_ALL_BILLS = "SELECT * FROM " + Bill.BILLS_TABLE_NAME;
+        String selectAllBills = "SELECT * FROM " + Bill.BILLS_TABLE_NAME;
         SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery(SELECT_ALL_BILLS, null);
+        Cursor cursor = database.rawQuery(selectAllBills, null);
 
         if (cursor.moveToFirst()) {
-            while (cursor.moveToNext()) {
+            while (!cursor.isAfterLast()) {
                 Bill bill = new Bill(
                         cursor.getInt(cursor.getColumnIndex(Bill.COLUMN_BILL_ID)),
                         cursor.getString(cursor.getColumnIndex(Bill.COLUMN_BILL_NAME)),
-                        cursor.getDouble(cursor.getColumnIndex(Bill.COLUMN_BILL_FUND)),
                         cursor.getDouble(cursor.getColumnIndex(Bill.COLUMN_BILL_COST)),
+                        cursor.getDouble(cursor.getColumnIndex(Bill.COLUMN_BILL_FUND)),
                         cursor.getString(cursor.getColumnIndex(Bill.COLUMN_BILL_DUE)),
                         cursor.getInt(cursor.getColumnIndex(Bill.COLUMN_BILL_PAID))
                 );
 
                 bills.add(bill);
+
+                cursor.moveToNext();
             }
         }
 

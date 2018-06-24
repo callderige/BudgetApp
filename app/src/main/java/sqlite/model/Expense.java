@@ -23,6 +23,8 @@ public class Expense {
                     + COLUMN_EXPENSE_TYPE + " TEXT"
                     + ")";
 
+    public static final String DROP_TABLE_EXPENSE = "DROP TABLE IF EXISTS " + EXPENSES_TABLE_NAME;
+
     public Expense() {}
 
     public Expense(int id, String name, double spent, double limit, String type) {
