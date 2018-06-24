@@ -33,19 +33,49 @@ public class Expense {
         this.type = type;
     }
 
+    /*
+       Get methods
+    */
     public int getId() {
         return id;
     }
+
     public String getName() {
         return name;
     }
+
     public double getSpent() {
         return spent;
     }
+
     public double getLimit() {
         return limit;
     }
+
     public String getType() {
         return type;
+    }
+
+    /*
+        Set methods
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSpent(double spent) {
+        this.spent = spent;
+    }
+
+    public void setLimit(double limit) {
+        this.limit = limit;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
