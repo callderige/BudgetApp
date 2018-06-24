@@ -15,7 +15,7 @@ public class Expense {
     private String type;
 
     public static final String CREATE_TABLE_EXPENSES =
-            "CREATE TABLE " + EXPENSES_TABLE_NAME + "("
+            "CREATE TABLE IF NOT EXISTS " + EXPENSES_TABLE_NAME + "("
                     + COLUMN_EXPENSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_EXPENSE_NAME + " TEXT,"
                     + COLUMN_EXPENSE_SPENT + " NUMERIC,"

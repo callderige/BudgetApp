@@ -17,6 +17,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.execSQL(Bill.CREATE_TABLE_BILLS);
+        database.execSQL(Expense.CREATE_TABLE_EXPENSES);
     }
 
     public void onCreate(SQLiteDatabase database) {
@@ -27,6 +31,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         database.execSQL("DROP TABLE " + Bill.BILLS_TABLE_NAME);
         database.execSQL("DROP TABLE " + Expense.EXPENSES_TABLE_NAME);
+    }
+
+    public void dropTables() {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        database.execSQL("DROP TABLE IF EXISTS " + Bill.BILLS_TABLE_NAME);
+        database.execSQL("DROP TABLE IF EXISTS " + Expense.EXPENSES_TABLE_NAME);
     }
 
     /**
@@ -57,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Returns all bills
-     * @return A List of all Bill objects
+     * @return A List of all bills as Bill objects
      */
     public List<Bill> getAllBills() {
         List<Bill> bills = new ArrayList<>();
@@ -115,5 +126,91 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return database.delete(Bill.BILLS_TABLE_NAME, Bill.COLUMN_BILL_ID + " = ?",
                 new String[] { String.valueOf(bill.getId()) } );
+    }
+
+    /**
+     *
+     * @param name The name of the expense
+     * @param spent The money spent so far on the expense
+     * @param limit The limit of how much can be spent on the expense
+     * @param type The type of expense, e.g. food, entertainment, etc.
+     * @return the Id of the newly created expense, returns -1 if an error occurred
+     */
+    public long createExpense(String name, double spent, double limit, String type) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Expense.COLUMN_EXPENSE_NAME, name);
+        contentValues.put(Expense.COLUMN_EXPENSE_SPENT, spent);
+        contentValues.put(Expense.COLUMN_EXPENSE_LIMIT, limit);
+        contentValues.put(Expense.COLUMN_EXPENSE_TYPE, type);
+
+        //Id of inserted row, if Id equals -1 then an error occurred on insert
+        long expenseId = database.insert(Expense.EXPENSES_TABLE_NAME, null, contentValues);
+        database.close();
+
+        return expenseId;
+    }
+
+    /**
+     * Returns all expenses
+     * @return a List of all expenses as Expense objects
+     */
+    public List<Expense> getAllExpenses() {
+        List<Expense> expenses = new ArrayList<>();
+        String selectAllExpenses = "SELECT * FROM " + Expense.EXPENSES_TABLE_NAME;
+
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery(selectAllExpenses, null);
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                Expense expense = new Expense(
+                        cursor.getInt(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_ID)),
+                        cursor.getString(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_NAME)),
+                        cursor.getDouble(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_SPENT)),
+                        cursor.getDouble(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_LIMIT)),
+                        cursor.getString(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_TYPE))
+                );
+
+                expenses.add(expense);
+
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+
+        return expenses;
+    }
+
+    /**
+     *
+     * @param expense The expense to be updated
+     * @return the number of rows affected
+     */
+    public int updateExpense(Expense expense) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Expense.COLUMN_EXPENSE_NAME, expense.getName());
+        contentValues.put(Expense.COLUMN_EXPENSE_SPENT, expense.getSpent());
+        contentValues.put(Expense.COLUMN_EXPENSE_LIMIT, expense.getLimit());
+        contentValues.put(Expense.COLUMN_EXPENSE_TYPE, expense.getType());
+
+        return database.update(Expense.EXPENSES_TABLE_NAME, contentValues, Expense.COLUMN_EXPENSE_ID + " = ?",
+                new String[] { String.valueOf(expense.getId()) } );
+    }
+
+    /**
+     * Deletes a single expense using the expense's ID
+     * @param expense The expense to be deleted
+     * @return the number of rows affected
+     */
+    public int deleteExpense(Expense expense) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        return database.delete(Expense.EXPENSES_TABLE_NAME, Expense.COLUMN_EXPENSE_ID + " = ?",
+                new String[] { String.valueOf(expense.getId()) } );
     }
 }

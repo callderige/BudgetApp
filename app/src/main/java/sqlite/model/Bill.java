@@ -17,7 +17,7 @@ public class Bill {
     private int paid;
 
     public static final String CREATE_TABLE_BILLS =
-            "CREATE TABLE " + BILLS_TABLE_NAME + "("
+            "CREATE TABLE IF NOT EXISTS " + BILLS_TABLE_NAME + "("
                     + COLUMN_BILL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + COLUMN_BILL_NAME + " TEXT,"
                     + COLUMN_BILL_COST + " INTEGER,"
