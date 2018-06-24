@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public long createBill(String name, double cost, double fund, String due, int paid) {
         SQLiteDatabase database = this.getWritableDatabase();
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(Bill.COLUMN_BILL_NAME, name);
         contentValues.put(Bill.COLUMN_BILL_COST, cost);
@@ -55,6 +55,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return billId;
     }
 
+    /**
+     * Returns all bills
+     * @return A List of all Bill objects
+     */
     public List<Bill> getAllBills() {
         List<Bill> bills = new ArrayList<>();
 
@@ -80,5 +84,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return bills;
+    }
+
+    /**
+     * Updates a single bill using the bill's ID
+     * @param bill The bill to be updated
+     * @return the number of rows affected
+     */
+    public int updateBill(Bill bill) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Bill.COLUMN_BILL_NAME, bill.getName());
+        contentValues.put(Bill.COLUMN_BILL_COST, bill.getCost());
+        contentValues.put(Bill.COLUMN_BILL_FUND, bill.getFund());
+        contentValues.put(Bill.COLUMN_BILL_DUE, bill.getDue());
+        contentValues.put(Bill.COLUMN_BILL_PAID, bill.getPaid());
+
+        return database.update(Bill.BILLS_TABLE_NAME, contentValues, Bill.COLUMN_BILL_ID + " = ?",
+                new String[] { String.valueOf(bill.getId()) } );
+    }
+
+    /**
+     * Deletes a single bill using the bill's ID
+     * @param bill The bill to be updated
+     * @return the number of rows affected
+     */
+    public int deleteBill(Bill bill) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        return database.delete(Bill.BILLS_TABLE_NAME, Bill.COLUMN_BILL_ID + " = ?",
+                new String[] { String.valueOf(bill.getId()) } );
     }
 }
