@@ -23,6 +23,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        setTitle(getString(R.string.app_bar, "Settings"));
 
         mSharedPreferences = getBaseContext().getSharedPreferences(USER_SETTINGS, MODE_PRIVATE);
 

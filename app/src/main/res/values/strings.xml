@@ -3,12 +3,15 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">%1$s</string>
 
+    <string name="app_bar">%1$s</string>
+
+    <!-- Dashboard strings -->
+
     <!-- Settings strings -->
     <string name="title_settings">Settings</string>
     <string name="net_income_hint">Enter your net income</string>
 
     <!-- Entry strings -->
-    <string name="title_entry">Add new bill or expense</string>
 
     <!-- Button strings -->
     <string name="save_button">Save</string>
