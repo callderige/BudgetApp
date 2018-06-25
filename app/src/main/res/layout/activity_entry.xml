@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/entry_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EntryActivity">
+
+    <TextView
+        android:id="@+id/text_title_entry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/title_entry"/>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/scroll_view_entry_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_entry"
+        app:layout_constraintBottom_toTopOf="@+id/linear_layout_button_container">
+
+        <include android:id="@+id/merge_form"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/merge_bill_form" />
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/linear_layout_button_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:weightSum="12"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/btn_entry_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="6"
+            android:text="@string/save_button"
+            android:textSize="@dimen/fontSizeSmall" />
+
+        <Button style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/btn_entry_cancel"
+            android:layout_weight="6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_button"
+            android:textSize="@dimen/fontSizeSmall" />
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
