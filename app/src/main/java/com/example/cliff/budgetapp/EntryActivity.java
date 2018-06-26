@@ -3,9 +3,7 @@ package com.example.cliff.budgetapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -68,22 +66,16 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
     public class onSpinnerItemSelected implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-            switch (adapterView.getId()) {
-                case R.id.spinner_budget_type: {
-                    if (position == 0) {
-                        mViewFlipper.setDisplayedChild(0);
-                        setTitle(getString(R.string.app_bar, "New Bill"));
-                    } else {
-                        mViewFlipper.setDisplayedChild(1);
-                        setTitle(getString(R.string.app_bar, "New Expense"));
-                    }
-                    break;
+            if (adapterView.getId() == R.id.spinner_budget_type) {
+                if (position == 0) {
+                    mViewFlipper.setDisplayedChild(0);
+                    setTitle(getString(R.string.app_bar, "New Bill"));
+                } else {
+                    mViewFlipper.setDisplayedChild(1);
+                    setTitle(getString(R.string.app_bar, "New Expense"));
                 }
-
-                default: {
-
-                    break;
-                }
+            } else if (adapterView.getId() == R.id.spinner_expense_type) {
+                
             }
         }
 

@@ -1,6 +1,13 @@
 package sqlite.model;
 
 public class Bill {
+    private int id;
+    private String name;
+    private double cost;
+    private double fund;
+    private String due;
+    private int paid;
+
     public static final String BILLS_TABLE_NAME = "bills";
     public static final String COLUMN_BILL_ID = "bill_id";
     public static final String COLUMN_BILL_NAME = "bill_name";
@@ -8,13 +15,6 @@ public class Bill {
     public static final String COLUMN_BILL_FUND = "bill_fund";
     public static final String COLUMN_BILL_DUE = "bill_due";
     public static final String COLUMN_BILL_PAID = "bill_paid";
-
-    private int id;
-    private String name;
-    private double cost;
-    private double fund;
-    private String due;
-    private int paid;
 
     public static final String CREATE_TABLE_BILLS =
             "CREATE TABLE IF NOT EXISTS " + BILLS_TABLE_NAME + "("

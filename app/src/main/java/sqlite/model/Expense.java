@@ -1,18 +1,18 @@
 package sqlite.model;
 
 public class Expense {
+    private int id;
+    private String name;
+    private double spent;
+    private double limit;
+    private String type;
+
     public static final String EXPENSES_TABLE_NAME = "expenses";
     public static final String COLUMN_EXPENSE_ID = "expense_id";
     public static final String COLUMN_EXPENSE_NAME = "expense_name";
     public static final String COLUMN_EXPENSE_SPENT = "expense_spent";
     public static final String COLUMN_EXPENSE_LIMIT = "expense_limit";
     public static final String COLUMN_EXPENSE_TYPE = "expense_type";
-
-    private int id;
-    private String name;
-    private double spent;
-    private double limit;
-    private String type;
 
     public static final String CREATE_TABLE_EXPENSES =
             "CREATE TABLE IF NOT EXISTS " + EXPENSES_TABLE_NAME + "("
