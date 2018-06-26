@@ -12,6 +12,13 @@
     <string name="net_income_hint">Enter your net income</string>
 
     <!-- Entry strings -->
+    <string name="edit_bill_name_hint">Name of bill</string>
+    <string name="edit_bill_cost_hint">Cost of bill</string>
+    <string name="text_bill_due">Bill is due on</string>
+
+    <string name="edit_expense_name_hint">Name of expense</string>
+    <string name="edit_expense_limit_hint">Limit of expense</string>
+    <string name="text_expense_type">Select expense category</string>
 
     <!-- Button strings -->
     <string name="save_button">Save</string>

@@ -72,8 +72,10 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
                 case R.id.spinner_budget_type: {
                     if (position == 0) {
                         mViewFlipper.setDisplayedChild(0);
+                        setTitle(getString(R.string.app_bar, "New Bill"));
                     } else {
                         mViewFlipper.setDisplayedChild(1);
+                        setTitle(getString(R.string.app_bar, "New Expense"));
                     }
                     break;
                 }
