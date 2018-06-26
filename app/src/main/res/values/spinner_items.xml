@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="budget_type_array">
+        <item>Bill</item>
+        <item>Expense</item>
+    </string-array>
+
+    <string-array name="expense_type_array">
+        <item>Groceries</item>
+        <item>Travel</item>
+        <item>Entertainment</item>
+        <item>Clothing</item>
+        <item>Recreational</item>
+    </string-array>
+</resources>

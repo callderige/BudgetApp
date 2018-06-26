@@ -7,16 +7,37 @@
     android:layout_height="match_parent"
     tools:context=".EntryActivity">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/scroll_view_entry_container"
+    <Spinner
+        android:id="@+id/spinner_budget_type"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/linear_layout_button_container">
+        app:layout_constraintTop_toTopOf="parent">
 
-    </ScrollView>
+    </Spinner>
+
+    <ViewFlipper
+        android:id="@+id/flipper_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:measureAllChildren="false"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_budget_type">
+
+        <include android:id="@+id/merge_bill_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/merge_bill_form" />
+
+        <include android:id="@+id/merge_expense_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/merge_expense_form" />
+    </ViewFlipper>
 
     <LinearLayout
         android:id="@+id/linear_layout_button_container"
