@@ -1,8 +1,12 @@
-package com.example.cliff.budgetapp;
+package adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.example.cliff.budgetapp.BillsFragment;
+import com.example.cliff.budgetapp.DashboardFragment;
+import com.example.cliff.budgetapp.ExpensesFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -10,7 +14,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    protected SectionsPagerAdapter(FragmentManager fm) {
+    public SectionsPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
