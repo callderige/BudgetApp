@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cliff.budgetapp.R;
 
@@ -38,9 +41,10 @@ public class BillAdapter extends ArrayAdapter<Bill> {
     @Override
     @NonNull
     @SuppressWarnings("ConstantConditions")
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        Bill bill = getItem(position);
-        ViewHolder viewHolder = new ViewHolder();
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+        final Bill bill = getItem(position);
+
+        final ViewHolder viewHolder;
 
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -58,6 +62,7 @@ public class BillAdapter extends ArrayAdapter<Bill> {
 
             viewHolder.cbPaid = convertView.findViewById(R.id.cb_bill_paid);
         } else {
+            viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.listview_bill_item, parent, false);
 
@@ -72,6 +77,17 @@ public class BillAdapter extends ArrayAdapter<Bill> {
 
             viewHolder.cbPaid = convertView.findViewById(R.id.cb_bill_paid);
         }
+
+        viewHolder.cbPaid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(compoundButton.isChecked()) {
+                    viewHolder.tvBillStatus.setText(mContext.getString(R.string.text_list_view_bill_paid));
+                } else {
+                    viewHolder.tvBillStatus.setText(mContext.getString(R.string.text_list_view_bill_due, bill.getDue()));
+                }
+            }
+        });
 
         return convertView;
     }
