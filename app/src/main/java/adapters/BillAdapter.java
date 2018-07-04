@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cliff.budgetapp.DatabaseHelper;
 import com.example.cliff.budgetapp.R;
 
 import java.util.List;
@@ -61,6 +62,13 @@ public class BillAdapter extends ArrayAdapter<Bill> {
             viewHolder.tvBillStatus.setText(getContext().getString(R.string.text_list_view_bill_due, bill.getDue()));
 
             viewHolder.cbPaid = convertView.findViewById(R.id.cb_bill_paid);
+            if (bill.getPaid() == 0) {
+                viewHolder.cbPaid.setChecked(false);
+                viewHolder.tvBillStatus.setText(mContext.getString(R.string.text_list_view_bill_due, bill.getDue()));
+            } else {
+                viewHolder.cbPaid.setChecked(true);
+                viewHolder.tvBillStatus.setText(mContext.getString(R.string.text_list_view_bill_paid));
+            }
         } else {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -76,15 +84,27 @@ public class BillAdapter extends ArrayAdapter<Bill> {
             viewHolder.tvBillStatus.setText(getContext().getString(R.string.text_list_view_bill_due, bill.getDue()));
 
             viewHolder.cbPaid = convertView.findViewById(R.id.cb_bill_paid);
+            if (bill.getPaid() == 0) {
+                viewHolder.cbPaid.setChecked(false);
+                viewHolder.tvBillStatus.setText(mContext.getString(R.string.text_list_view_bill_due, bill.getDue()));
+            } else {
+                viewHolder.cbPaid.setChecked(true);
+                viewHolder.tvBillStatus.setText(mContext.getString(R.string.text_list_view_bill_paid));
+            }
         }
 
         viewHolder.cbPaid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
                 if(compoundButton.isChecked()) {
                     viewHolder.tvBillStatus.setText(mContext.getString(R.string.text_list_view_bill_paid));
+                    bill.setPaid(1);
+                    databaseHelper.updateBill(bill);
                 } else {
                     viewHolder.tvBillStatus.setText(mContext.getString(R.string.text_list_view_bill_due, bill.getDue()));
+                    bill.setPaid(0);
+                    databaseHelper.updateBill(bill);
                 }
             }
         });
