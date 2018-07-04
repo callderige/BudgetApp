@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.List;
 
 import adapters.BillAdapter;
@@ -54,6 +55,7 @@ public class BillsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(getContext(), EntryActivity.class);
+                intent.putExtra("bill", bill);
                 startActivity(intent);
                 getActivity().finish();
                 getActivity().overridePendingTransition(0,0);

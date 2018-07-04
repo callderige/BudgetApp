@@ -2,6 +2,7 @@ package com.example.cliff.budgetapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +15,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import java.io.Serializable;
 import java.util.HashMap;
+
+import sqlite.model.Bill;
 
 public class EntryActivity extends AppCompatActivity implements View.OnClickListener {
     private Spinner mExpenseTypeSpinner;
@@ -27,6 +31,7 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
 
         //Default title is set to new bill
         setTitle(getString(R.string.app_bar, "New Bill"));
+        setHints();
 
         mViewFlipper = findViewById(R.id.flipper_form);
 
@@ -50,15 +55,32 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_entry_save: {
-                HashMap<String, String> returnedInsertResult = insertIntoDatabase();
-                if (returnedInsertResult.get("status").equals("success")) {
-                    Toast.makeText(getApplicationContext(),
-                            returnedInsertResult.get("success_information"), Toast.LENGTH_LONG).show();
-                    finishActivity();
-                } else if (returnedInsertResult.get("status").equals("failed")){
-                    Toast.makeText(getApplicationContext(),
-                            returnedInsertResult.get("failed_information"), Toast.LENGTH_LONG).show();
+                Intent intent = getIntent();
+                if (intent.getSerializableExtra("bill") != null) {
+                    Bill bill = (Bill) intent.getSerializableExtra("bill");
+                    HashMap<String, String> returnedUpdateResult = updateDatabase(bill);
+                    if (returnedUpdateResult.get("status").equals("success")) {
+                        Toast.makeText(getApplicationContext(),
+                                returnedUpdateResult.get("success_information"), Toast.LENGTH_LONG).show();
+                        finishActivity();
+                    } else if (returnedUpdateResult.get("status").equals("failed")){
+                        Toast.makeText(getApplicationContext(),
+                                returnedUpdateResult.get("failed_information"), Toast.LENGTH_LONG).show();
+                    }
+                } else if (intent.getSerializableExtra("expense") != null){
+
+                } else {
+                    HashMap<String, String> returnedInsertResult = insertIntoDatabase();
+                    if (returnedInsertResult.get("status").equals("success")) {
+                        Toast.makeText(getApplicationContext(),
+                                returnedInsertResult.get("success_information"), Toast.LENGTH_LONG).show();
+                        finishActivity();
+                    } else if (returnedInsertResult.get("status").equals("failed")){
+                        Toast.makeText(getApplicationContext(),
+                                returnedInsertResult.get("failed_information"), Toast.LENGTH_LONG).show();
+                    }
                 }
+
                 break;
             }
             case R.id.btn_entry_cancel: {
@@ -225,5 +247,67 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
         }
 
         return resultsToReturn;
+    }
+
+    private HashMap<String, String> updateDatabase(Bill bill) {
+        HashMap<String, String> resultsToReturn = new HashMap<>();
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+
+        switch (mViewFlipper.getDisplayedChild()) {
+            //When mViewFlipper equals 0, the bill form is recorded
+            case 0: {
+                EditText editText = findViewById(R.id.edit_bill_name);
+                if (!editText.getText().toString().equals(bill.getName())
+                        && !editText.getText().toString().trim().equals("")) {
+                    bill.setName(editText.getText().toString());
+                }
+
+                editText = findViewById(R.id.edit_bill_cost);
+                double billCost = Double.parseDouble(editText.getText().toString()+0);
+                if (billCost != bill.getCost()
+                        && editText.getText().toString().length() > 0) {
+                    bill.setCost(Double.parseDouble(editText.getText().toString()));
+                }
+
+                DatePicker datePicker = findViewById(R.id.date_picker_bill_due);
+                String date = datePicker.getYear() + "-" + datePicker.getMonth() + "-" + datePicker.getDayOfMonth();
+                if (!date.equals(bill.getDue())) {
+                    bill.setDue(date);
+                }
+
+                if (databaseHelper.updateBill(bill) > 0) {
+                    resultsToReturn.put("status", "success");
+                    resultsToReturn.put("success_information", "Bill has been updated.");
+                } else {
+                    resultsToReturn.put("status", "failed");
+                    resultsToReturn.put("failed_information", "Bill update failed.");
+                }
+                break;
+            }
+            //When mViewFlipper equals 1, the expense form is recorded
+            case 1: {
+
+                break;
+            }
+            default: {
+
+                break;
+            }
+        }
+
+        return resultsToReturn;
+    }
+
+    public void setHints() {
+        Intent intent = getIntent();
+        if (intent.getSerializableExtra("bill") != null) {
+            Bill bill = (Bill) intent.getSerializableExtra("bill");
+            TextInputLayout textInputLayout = findViewById(R.id.text_layout_bill_name);
+            textInputLayout.setHint(bill.getName());
+            textInputLayout = findViewById(R.id.text_layout_bill_cost);
+            textInputLayout.setHint(bill.getCost()+"");
+        } else if (intent.getSerializableExtra("expense") != null){
+
+        }
     }
 }
