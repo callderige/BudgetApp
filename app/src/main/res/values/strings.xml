@@ -22,4 +22,8 @@
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
 
+    <!-- Bill strings-->
+    <string name="text_list_view_bill_name">%1$s</string>
+    <string name="text_list_view_bill_cost">Cost: %1$s</string>
+    <string name="text_list_view_bill_due">Due on %1$s</string>
 </resources>
