@@ -7,13 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.cliff.budgetapp.R;
 
 import java.util.List;
+import java.util.Locale;
 
 import sqlite.model.Expense;
 
@@ -23,9 +24,10 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
 
     private static class ViewHolder {
         TextView tvExpenseName;
-        TextView tvExpenseSpent;
-        TextView tvExpenseLimit;
-        Button btnSpend;
+        TextView tvExpenseStatus;
+        Button btnExpenseSpend;
+        EditText etSpendInput;
+        Button btnSubmitSpend;
         ProgressBar progressBarExpense;
     }
 
@@ -50,6 +52,16 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
 
             viewHolder.tvExpenseName = convertView.findViewById(R.id.tv_expense_name);
             viewHolder.tvExpenseName.setText(expense.getName());
+
+            viewHolder.tvExpenseStatus = convertView.findViewById(R.id.tv_expense_status);
+            String spent = String.format(Locale.US, "%.2f", expense.getSpent());
+            String limit = String.format(Locale.US, "%.2f", expense.getLimit());
+            viewHolder.tvExpenseStatus.setText(mContext.getString(R.string.text_list_view_expense_status, spent, limit));
+
+            double progressBarNumber = Math.floor( (expense.getSpent() / expense.getLimit()) * 100);
+            viewHolder.progressBarExpense = convertView.findViewById(R.id.progress_bar_expense);
+            viewHolder.progressBarExpense.setProgress((int) progressBarNumber);
+
         } else {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -57,7 +69,24 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
 
             viewHolder.tvExpenseName = convertView.findViewById(R.id.tv_expense_name);
             viewHolder.tvExpenseName.setText(expense.getName());
+
+            viewHolder.tvExpenseStatus = convertView.findViewById(R.id.tv_expense_status);
+            String spent = String.format(Locale.US, "%.2f", expense.getSpent());
+            String limit = String.format(Locale.US, "%.2f", expense.getLimit());
+            viewHolder.tvExpenseStatus.setText(mContext.getString(R.string.text_list_view_expense_status, spent, limit));
+
+            double progressBarNumber = Math.floor( (expense.getSpent() / expense.getLimit()) * 100);
+            viewHolder.progressBarExpense = convertView.findViewById(R.id.progress_bar_expense);
+            viewHolder.progressBarExpense.setProgress((int) progressBarNumber);
         }
+
+        viewHolder.btnExpenseSpend = convertView.findViewById(R.id.btn_expense_spend);
+        viewHolder.btnExpenseSpend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         return convertView;
     }
