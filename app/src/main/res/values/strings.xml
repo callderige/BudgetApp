@@ -21,6 +21,7 @@
     <!-- Button strings -->
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
+    <string name="spend_button">Spend</string>
 
     <!-- Bill strings -->
     <string name="text_list_view_bill_name">%1$s</string>

@@ -16,9 +16,11 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import sqlite.model.Bill;
+import sqlite.model.Expense;
 
 public class EntryActivity extends AppCompatActivity implements View.OnClickListener {
     private Spinner mExpenseTypeSpinner;
@@ -28,10 +30,9 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
-
+        Intent intent = getIntent();
         //Default title is set to new bill
         setTitle(getString(R.string.app_bar, "New Bill"));
-        setHints();
 
         mViewFlipper = findViewById(R.id.flipper_form);
 
@@ -49,6 +50,14 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
         saveButton.setOnClickListener(this);
         Button cancelButton = findViewById(R.id.btn_entry_cancel);
         cancelButton.setOnClickListener(this);
+
+        if (intent.getSerializableExtra("bill") != null) {
+            BudgetTypeSpinner.setSelection(0);
+        } else if (intent.getSerializableExtra("expense") != null) {
+            BudgetTypeSpinner.setSelection(1);
+        }
+
+        setHints();
     }
 
     @Override
@@ -68,7 +77,16 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
                                 returnedUpdateResult.get("failed_information"), Toast.LENGTH_LONG).show();
                     }
                 } else if (intent.getSerializableExtra("expense") != null){
-
+                    Expense expense = (Expense) intent.getSerializableExtra("expense");
+                    HashMap<String, String> returnedUpdateResult = updateDatabase(expense);
+                    if (returnedUpdateResult.get("status").equals("success")) {
+                        Toast.makeText(getApplicationContext(),
+                                returnedUpdateResult.get("success_information"), Toast.LENGTH_LONG).show();
+                        finishActivity();
+                    } else if (returnedUpdateResult.get("status").equals("failed")){
+                        Toast.makeText(getApplicationContext(),
+                                returnedUpdateResult.get("failed_information"), Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     HashMap<String, String> returnedInsertResult = insertIntoDatabase();
                     if (returnedInsertResult.get("status").equals("success")) {
@@ -241,7 +259,7 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
             }
             default: {
                 resultsToReturn.put("status", "failed");
-                resultsToReturn.put("failed_information", "Could not find correct view");
+                resultsToReturn.put("failed_information", "Invalid display requested.");
                 break;
             }
         }
@@ -249,13 +267,14 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
         return resultsToReturn;
     }
 
-    private HashMap<String, String> updateDatabase(Bill bill) {
+    public HashMap<String, String> updateDatabase(Serializable serializable) {
         HashMap<String, String> resultsToReturn = new HashMap<>();
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
         switch (mViewFlipper.getDisplayedChild()) {
-            //When mViewFlipper equals 0, the bill form is recorded
+            //When mViewFlipper equals 0, the bill form is updated
             case 0: {
+                Bill bill = (Bill) serializable;
                 EditText editText = findViewById(R.id.edit_bill_name);
                 if (!editText.getText().toString().equals(bill.getName())
                         && !editText.getText().toString().trim().equals("")) {
@@ -284,13 +303,35 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             }
-            //When mViewFlipper equals 1, the expense form is recorded
+            //When mViewFlipper equals 1, the expense form is updated
             case 1: {
+                Expense expense = (Expense) serializable;
+                EditText editText = findViewById(R.id.edit_expense_name);
+                if (!editText.getText().toString().equals(expense.getName()) && !editText.getText().toString().trim().equals("")) {
+                    expense.setName(editText.getText().toString());
+                }
 
+                editText = findViewById(R.id.edit_expense_limit);
+                double expenseLimit = Double.parseDouble(editText.getText().toString()+0);
+                if (expenseLimit != expense.getLimit() && editText.getText().toString().length() > 0) {
+                    expense.setLimit(Double.parseDouble(editText.getText().toString()));
+                }
+
+                String expenseType = mExpenseTypeSpinner.getSelectedItem().toString();
+                expense.setType(expenseType);
+
+                if (databaseHelper.updateExpense(expense) > 0) {
+                    resultsToReturn.put("status", "success");
+                    resultsToReturn.put("success_information", "Expense has been updated.");
+                } else {
+                    resultsToReturn.put("status", "failed");
+                    resultsToReturn.put("failed_information", "Expense update failed.");
+                }
                 break;
             }
             default: {
-
+                resultsToReturn.put("status", "failed");
+                resultsToReturn.put("failed_information", "Invalid display requested.");
                 break;
             }
         }
@@ -307,7 +348,16 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
             textInputLayout = findViewById(R.id.text_layout_bill_cost);
             textInputLayout.setHint(bill.getCost()+"");
         } else if (intent.getSerializableExtra("expense") != null){
-
+            Expense expense = (Expense) intent.getSerializableExtra("expense");
+            TextInputLayout textInputLayout = findViewById(R.id.text_layout_expense_name);
+            textInputLayout.setHint(expense.getName());
+            textInputLayout = findViewById(R.id.text_layout_expense_limit);
+            textInputLayout.setHint(expense.getLimit()+"");
+            for (int i = 0; i < mExpenseTypeSpinner.getCount(); i++) {
+                if (expense.getType().equals(mExpenseTypeSpinner.getItemAtPosition(i))) {
+                    mExpenseTypeSpinner.setSelection(i);
+                }
+            }
         }
     }
 }
