@@ -1,16 +1,23 @@
 package adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.cliff.budgetapp.DatabaseHelper;
 import com.example.cliff.budgetapp.R;
 
 import java.util.List;
@@ -26,8 +33,6 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
         TextView tvExpenseName;
         TextView tvExpenseStatus;
         Button btnExpenseSpend;
-        EditText etSpendInput;
-        Button btnSubmitSpend;
         ProgressBar progressBarExpense;
     }
 
@@ -80,11 +85,15 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
             viewHolder.progressBarExpense.setProgress((int) progressBarNumber);
         }
 
+        if (viewHolder.progressBarExpense.getProgress() >= 100) {
+            viewHolder.progressBarExpense.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+        }
+
         viewHolder.btnExpenseSpend = convertView.findViewById(R.id.btn_expense_spend);
         viewHolder.btnExpenseSpend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                openAlertDialog(expense);
             }
         });
 
@@ -99,6 +108,73 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
     @Override
     public Expense getItem(int position) {
         return mExpense.get(position);
+    }
+
+    private void openAlertDialog(final Expense expense) {
+        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
+        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+        View dialogLayout = layoutInflater.inflate(R.layout.alert_dialog_expense_spend, null);
+        alertBuilder.setView(dialogLayout);
+        final AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+
+        final EditText etAlertDialogExpense = dialogLayout.findViewById(R.id.et_alert_dialog_expense);
+        etAlertDialogExpense.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean success = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (etAlertDialogExpense.getText().toString().trim().length() > 0) {
+                        DatabaseHelper databaseHelper = new DatabaseHelper(mContext);
+                        expense.setSpent(expense.getSpent() + Double.parseDouble(etAlertDialogExpense.getText().toString()));
+                        if (expense.getSpent() < 0) {
+                            expense.setSpent(0);
+                        }
+                        if (databaseHelper.updateExpense(expense) > 0) {
+                            success = true;
+                            alertDialog.dismiss();
+                        } else {
+                            success = false;
+                        }
+                    } else {
+                        success = false;
+                    }
+                }
+                return success;
+            }
+        });
+
+        Button btnSave = dialogLayout.findViewById(R.id.btn_alert_dialog_expense_spend_save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (etAlertDialogExpense.getText().toString().trim().length() > 0) {
+
+                    DatabaseHelper databaseHelper = new DatabaseHelper(mContext);
+                    expense.setSpent(expense.getSpent() + Double.parseDouble(etAlertDialogExpense.getText().toString()));
+
+                    if (expense.getSpent() < 0) {
+                        expense.setSpent(0);
+                    }
+
+                    if (databaseHelper.updateExpense(expense) > 0) {
+                        alertDialog.dismiss();
+                    } else {
+                        Toast.makeText(mContext, "An error occurred while updating.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(mContext, "Please enter a valid number.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        Button btnCancel = dialogLayout.findViewById(R.id.btn_alert_dialog_expense_spend_cancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
     }
 }
 
