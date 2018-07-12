@@ -48,21 +48,19 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/btn_settings_cancel"
+            android:layout_weight="6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_button" />
+
+        <Button style="@style/Widget.AppCompat.Button.Colored"
             android:id="@+id/btn_settings_save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="6"
             android:text="@string/save_button" />
-
-        <Button style="@style/Widget.AppCompat.Button.Colored"
-            android:id="@+id/btn_settings_cancel"
-            android:layout_weight="6"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel_button"
-            />
-
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

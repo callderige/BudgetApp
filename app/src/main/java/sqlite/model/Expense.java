@@ -9,24 +9,6 @@ public class Expense implements Serializable {
     private double limit;
     private String type;
 
-    public static final String EXPENSES_TABLE_NAME = "expenses";
-    public static final String COLUMN_EXPENSE_ID = "expense_id";
-    public static final String COLUMN_EXPENSE_NAME = "expense_name";
-    public static final String COLUMN_EXPENSE_SPENT = "expense_spent";
-    public static final String COLUMN_EXPENSE_LIMIT = "expense_limit";
-    public static final String COLUMN_EXPENSE_TYPE = "expense_type";
-
-    public static final String CREATE_TABLE_EXPENSES =
-            "CREATE TABLE IF NOT EXISTS " + EXPENSES_TABLE_NAME + "("
-                    + COLUMN_EXPENSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + COLUMN_EXPENSE_NAME + " TEXT,"
-                    + COLUMN_EXPENSE_SPENT + " NUMERIC,"
-                    + COLUMN_EXPENSE_LIMIT + " NUMERIC,"
-                    + COLUMN_EXPENSE_TYPE + " TEXT"
-                    + ")";
-
-    public static final String DROP_TABLE_EXPENSE = "DROP TABLE IF EXISTS " + EXPENSES_TABLE_NAME;
-
     public Expense() {}
 
     public Expense(int id, String name, double spent, double limit, String type) {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +31,10 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
     private Context mContext;
 
     private static class ViewHolder {
-        TextView tvExpenseName;
-        TextView tvExpenseStatus;
-        Button btnExpenseSpend;
-        ProgressBar progressBarExpense;
+        TextView expenseNameTextView;
+        TextView expenseStatusTextView;
+        Button expenseSpendButton;
+        ProgressBar expenseProgressBar;
     }
 
     public ExpenseAdapter(Context context, List<Expense> expense) {
@@ -47,7 +48,6 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
     @SuppressWarnings("ConstantConditions")
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final Expense expense = getItem(position);
-
         final ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -55,42 +55,41 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.listview_expense_item, parent, false);
 
-            viewHolder.tvExpenseName = convertView.findViewById(R.id.tv_expense_name);
-            viewHolder.tvExpenseName.setText(expense.getName());
+            viewHolder.expenseNameTextView = convertView.findViewById(R.id.tv_expense_name);
+            viewHolder.expenseNameTextView.setText(expense.getName());
 
-            viewHolder.tvExpenseStatus = convertView.findViewById(R.id.tv_expense_status);
+            viewHolder.expenseStatusTextView = convertView.findViewById(R.id.tv_expense_status);
             String spent = String.format(Locale.US, "%.2f", expense.getSpent());
             String limit = String.format(Locale.US, "%.2f", expense.getLimit());
-            viewHolder.tvExpenseStatus.setText(mContext.getString(R.string.text_list_view_expense_status, spent, limit));
+            viewHolder.expenseStatusTextView.setText(mContext.getString(R.string.text_list_view_expense_status, spent, limit));
 
             double progressBarNumber = Math.floor( (expense.getSpent() / expense.getLimit()) * 100);
-            viewHolder.progressBarExpense = convertView.findViewById(R.id.progress_bar_expense);
-            viewHolder.progressBarExpense.setProgress((int) progressBarNumber);
-
+            viewHolder.expenseProgressBar = convertView.findViewById(R.id.progress_bar_expense);
+            viewHolder.expenseProgressBar.setProgress((int) progressBarNumber);
         } else {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.listview_expense_item, parent, false);
 
-            viewHolder.tvExpenseName = convertView.findViewById(R.id.tv_expense_name);
-            viewHolder.tvExpenseName.setText(expense.getName());
+            viewHolder.expenseNameTextView = convertView.findViewById(R.id.tv_expense_name);
+            viewHolder.expenseNameTextView.setText(expense.getName());
 
-            viewHolder.tvExpenseStatus = convertView.findViewById(R.id.tv_expense_status);
             String spent = String.format(Locale.US, "%.2f", expense.getSpent());
             String limit = String.format(Locale.US, "%.2f", expense.getLimit());
-            viewHolder.tvExpenseStatus.setText(mContext.getString(R.string.text_list_view_expense_status, spent, limit));
+            viewHolder.expenseStatusTextView = convertView.findViewById(R.id.tv_expense_status);
+            viewHolder.expenseStatusTextView.setText(mContext.getString(R.string.text_list_view_expense_status, spent, limit));
 
             double progressBarNumber = Math.floor( (expense.getSpent() / expense.getLimit()) * 100);
-            viewHolder.progressBarExpense = convertView.findViewById(R.id.progress_bar_expense);
-            viewHolder.progressBarExpense.setProgress((int) progressBarNumber);
+            viewHolder.expenseProgressBar = convertView.findViewById(R.id.progress_bar_expense);
+            viewHolder.expenseProgressBar.setProgress((int) progressBarNumber);
         }
 
-        if (viewHolder.progressBarExpense.getProgress() >= 100) {
-            viewHolder.progressBarExpense.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+        if (viewHolder.expenseProgressBar.getProgress() >= 100) {
+            viewHolder.expenseProgressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
         }
 
-        viewHolder.btnExpenseSpend = convertView.findViewById(R.id.btn_expense_spend);
-        viewHolder.btnExpenseSpend.setOnClickListener(new View.OnClickListener() {
+        viewHolder.expenseSpendButton = convertView.findViewById(R.id.btn_expense_spend);
+        viewHolder.expenseSpendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openAlertDialog(expense);
@@ -111,22 +110,23 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
     }
 
     private void openAlertDialog(final Expense expense) {
-        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         View dialogLayout = layoutInflater.inflate(R.layout.alert_dialog_expense_spend, null);
+
+        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
         alertBuilder.setView(dialogLayout);
         final AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
 
-        final EditText etAlertDialogExpense = dialogLayout.findViewById(R.id.et_alert_dialog_expense);
-        etAlertDialogExpense.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+        final EditText editExpenseSpendEditText = dialogLayout.findViewById(R.id.et_alert_dialog_expense_spend);
+        editExpenseSpendEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean success = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (etAlertDialogExpense.getText().toString().trim().length() > 0) {
+                    if (editExpenseSpendEditText.getText().toString().trim().length() > 0) {
                         DatabaseHelper databaseHelper = new DatabaseHelper(mContext);
-                        expense.setSpent(expense.getSpent() + Double.parseDouble(etAlertDialogExpense.getText().toString()));
+                        expense.setSpent(expense.getSpent() + Double.parseDouble(editExpenseSpendEditText.getText().toString()));
                         if (expense.getSpent() < 0) {
                             expense.setSpent(0);
                         }
@@ -144,19 +144,16 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
             }
         });
 
-        Button btnSave = dialogLayout.findViewById(R.id.btn_alert_dialog_expense_spend_save);
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        Button saveButton = dialogLayout.findViewById(R.id.btn_alert_dialog_expense_spend_save);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (etAlertDialogExpense.getText().toString().trim().length() > 0) {
-
+                if (editExpenseSpendEditText.getText().toString().trim().length() > 0) {
                     DatabaseHelper databaseHelper = new DatabaseHelper(mContext);
-                    expense.setSpent(expense.getSpent() + Double.parseDouble(etAlertDialogExpense.getText().toString()));
-
+                    expense.setSpent(expense.getSpent() + Double.parseDouble(editExpenseSpendEditText.getText().toString()));
                     if (expense.getSpent() < 0) {
                         expense.setSpent(0);
                     }
-
                     if (databaseHelper.updateExpense(expense) > 0) {
                         alertDialog.dismiss();
                     } else {
@@ -168,8 +165,8 @@ public class ExpenseAdapter extends ArrayAdapter<Expense> {
             }
         });
 
-        Button btnCancel = dialogLayout.findViewById(R.id.btn_alert_dialog_expense_spend_cancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        Button cancelButton = dialogLayout.findViewById(R.id.btn_alert_dialog_expense_spend_cancel);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();

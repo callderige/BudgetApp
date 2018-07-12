@@ -34,6 +34,6 @@
     <string name="text_list_view_expense_status">You have spent $%1$s out of your $%2$s limit.</string>
 
     <!-- Alert dialog expense spend strings -->
-    <string name="ad_expense_spend_tv_title">How much did you spend?.</string>
+    <string name="ad_expense_spend_tv_title">How much did you spend?</string>
     <string name="ad_expense_spend_et">$0.00</string>
 </resources>

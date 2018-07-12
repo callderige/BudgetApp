@@ -12,13 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_list_view_expense_name"
-        android:textSize="@dimen/fontSizeLarge"
+        android:textSize="@dimen/fontSizeMedium"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:focusable="false"
         android:focusableInTouchMode="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tv_expense_status" />
 
     <Button style="@style/Widget.AppCompat.Button.Colored"
         android:id="@+id/btn_expense_spend"
@@ -30,7 +31,8 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tv_expense_status" />
 
     <TextView
         android:id="@+id/tv_expense_status"
@@ -45,7 +47,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         app:layout_constraintTop_toBottomOf="@+id/btn_expense_spend"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/progress_bar_expense"
@@ -59,6 +61,6 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         style="@android:style/Widget.ProgressBar.Horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/tv_expense_status"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_expense_status" />
 
 </android.support.constraint.ConstraintLayout>

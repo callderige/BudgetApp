@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
 import adapters.ExpenseAdapter;
-import sqlite.model.Bill;
 import sqlite.model.Expense;
 
 public class ExpensesFragment extends Fragment {
@@ -67,10 +67,14 @@ public class ExpensesFragment extends Fragment {
         alertDialogBuilder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mDatabaseHelper.deleteExpense(expense);
-                mExpenseAdapter.clear();
-                mExpenseAdapter.addAll(mDatabaseHelper.getAllExpenses());
-                mExpenseAdapter.notifyDataSetChanged();
+                if (mDatabaseHelper.deleteExpense(expense) != 0) {
+                    mExpenseAdapter.clear();
+                    mExpenseAdapter.addAll(mDatabaseHelper.getAllExpenses());
+                    mExpenseAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getContext(), "Error deleting expense.", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 

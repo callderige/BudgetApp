@@ -16,7 +16,6 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import sqlite.model.Bill;
@@ -31,6 +30,7 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
         Intent intent = getIntent();
+
         //Default title is set to new bill
         setTitle(getString(R.string.app_bar, "New Bill"));
 
@@ -146,7 +146,7 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
 
     /**
      * Returns a HashMap with values explaining the status of the database insert
-     * @return The hashmap containing the results of the database insertion.
+     * @return The HashMap containing the results of the database insertion.
      */
     private HashMap<String, String> insertIntoDatabase() {
         HashMap<String, String> resultsToReturn = new HashMap<>();
@@ -155,7 +155,6 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
             //When mViewFlipper equals 0, the bill form is recorded
             case 0: {
                 byte passedChecks = 0;
-
                 EditText editText = findViewById(R.id.edit_bill_name);
                 String billName = editText.getText().toString();
                 if (billName.trim().length() > 0) {
@@ -169,7 +168,6 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
                 editText = findViewById(R.id.edit_bill_cost);
                 String billCostString = editText.getText().toString();
                 int decimalPlace = billCostString.indexOf('.');
-
                 if (billCostString.length() - decimalPlace <= 3 || decimalPlace == -1) {
                     passedChecks += 1;
                 } else {
@@ -208,7 +206,6 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
             //When mViewFlipper equals 1, the expense form is recorded
             case 1: {
                 byte passedChecks = 0;
-
                 EditText editText = findViewById(R.id.edit_expense_name);
                 String expenseName = editText.getText().toString();
                 if (expenseName.trim().length() > 0) {
@@ -222,7 +219,6 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
                 editText = findViewById(R.id.edit_expense_limit);
                 String expenseLimitString = editText.getText().toString();
                 int decimalPlace = expenseLimitString.indexOf('.');
-
                 if (expenseLimitString.length() - decimalPlace <= 3 || decimalPlace == -1) {
                     passedChecks += 1;
                 } else {
@@ -267,6 +263,11 @@ public class EntryActivity extends AppCompatActivity implements View.OnClickList
         return resultsToReturn;
     }
 
+    /**
+     * Returns a HashMap with values explaining the status of the database update
+     * @param serializable The bill or expense to be updated
+     * @return The HashMap containing the results of the database update.
+     */
     public HashMap<String, String> updateDatabase(Serializable serializable) {
         HashMap<String, String> resultsToReturn = new HashMap<>();
         DatabaseHelper databaseHelper = new DatabaseHelper(this);

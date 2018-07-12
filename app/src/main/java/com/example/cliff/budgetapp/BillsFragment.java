@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.List;
 
 import adapters.BillAdapter;
@@ -65,10 +65,14 @@ public class BillsFragment extends Fragment {
         alertDialogBuilder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mDatabaseHelper.deleteBill(bill);
-                mBillAdapter.clear();
-                mBillAdapter.addAll(mDatabaseHelper.getAllBills());
-                mBillAdapter.notifyDataSetChanged();
+                if (mDatabaseHelper.deleteBill(bill) != 0 ) {
+                    mBillAdapter.clear();
+                    mBillAdapter.addAll(mDatabaseHelper.getAllBills());
+                    mBillAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getContext(), "Error deleting bill.", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 

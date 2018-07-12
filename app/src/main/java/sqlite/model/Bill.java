@@ -10,26 +10,6 @@ public class Bill implements Serializable{
     private String due;
     private int paid;
 
-    public static final String BILLS_TABLE_NAME = "bills";
-    public static final String COLUMN_BILL_ID = "bill_id";
-    public static final String COLUMN_BILL_NAME = "bill_name";
-    public static final String COLUMN_BILL_COST = "bill_cost";
-    public static final String COLUMN_BILL_FUND = "bill_fund";
-    public static final String COLUMN_BILL_DUE = "bill_due";
-    public static final String COLUMN_BILL_PAID = "bill_paid";
-
-    public static final String CREATE_TABLE_BILLS =
-            "CREATE TABLE IF NOT EXISTS " + BILLS_TABLE_NAME + "("
-                    + COLUMN_BILL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + COLUMN_BILL_NAME + " TEXT,"
-                    + COLUMN_BILL_COST + " INTEGER,"
-                    + COLUMN_BILL_FUND + " INTEGER,"
-                    + COLUMN_BILL_DUE + " TEXT,"
-                    + COLUMN_BILL_PAID + " INTEGER"
-                    + ")";
-
-    public static final String DROP_TABLE_BILLS = "DROP TABLE IF EXISTS " + BILLS_TABLE_NAME;
-
     public Bill() {}
 
     public Bill(int id, String name, double cost, double fund, String due, int paid) {

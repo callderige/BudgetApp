@@ -13,30 +13,76 @@ import sqlite.model.Bill;
 import sqlite.model.Expense;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "BudgetDatabase.db";
+    //Database name
+    private static final String DATABASE_NAME = "BudgetDatabase.db";
+
+    //Bill table column names
+    private static final String BILLS_TABLE_NAME = "bills";
+    private static final String COLUMN_BILL_ID = "bill_id";
+    private static final String COLUMN_BILL_NAME = "bill_name";
+    private static final String COLUMN_BILL_COST = "bill_cost";
+    private static final String COLUMN_BILL_FUND = "bill_fund";
+    private static final String COLUMN_BILL_DUE = "bill_due";
+    private static final String COLUMN_BILL_PAID = "bill_paid";
+
+    //Create bill table SQL statement
+    private static final String CREATE_TABLE_BILLS =
+            "CREATE TABLE IF NOT EXISTS " + BILLS_TABLE_NAME + "("
+                    + COLUMN_BILL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + COLUMN_BILL_NAME + " TEXT,"
+                    + COLUMN_BILL_COST + " INTEGER,"
+                    + COLUMN_BILL_FUND + " INTEGER,"
+                    + COLUMN_BILL_DUE + " TEXT,"
+                    + COLUMN_BILL_PAID + " INTEGER"
+                    + ")";
+
+    //Drop bill table SQL statement
+    private static final String DROP_TABLE_BILLS = "DROP TABLE IF EXISTS " + BILLS_TABLE_NAME;
+
+
+    //Expense table column names
+    private static final String EXPENSES_TABLE_NAME = "expenses";
+    private static final String COLUMN_EXPENSE_ID = "expense_id";
+    private static final String COLUMN_EXPENSE_NAME = "expense_name";
+    private static final String COLUMN_EXPENSE_SPENT = "expense_spent";
+    private static final String COLUMN_EXPENSE_LIMIT = "expense_limit";
+    private static final String COLUMN_EXPENSE_TYPE = "expense_type";
+
+    //Create expense table SQL statement
+    private static final String CREATE_TABLE_EXPENSES =
+            "CREATE TABLE IF NOT EXISTS " + EXPENSES_TABLE_NAME + "("
+                    + COLUMN_EXPENSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + COLUMN_EXPENSE_NAME + " TEXT,"
+                    + COLUMN_EXPENSE_SPENT + " NUMERIC,"
+                    + COLUMN_EXPENSE_LIMIT + " NUMERIC,"
+                    + COLUMN_EXPENSE_TYPE + " TEXT"
+                    + ")";
+
+    //Drop expense table SQL statement
+    private static final String DROP_TABLE_EXPENSE = "DROP TABLE IF EXISTS " + EXPENSES_TABLE_NAME;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
     public void onCreate(SQLiteDatabase database) {
-        database.execSQL(Bill.CREATE_TABLE_BILLS);
-        database.execSQL(Expense.CREATE_TABLE_EXPENSES);
+        database.execSQL(CREATE_TABLE_BILLS);
+        database.execSQL(CREATE_TABLE_EXPENSES);
     }
 
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        database.execSQL(Bill.DROP_TABLE_BILLS);
-        database.execSQL(Expense.DROP_TABLE_EXPENSE);
+        database.execSQL(DROP_TABLE_BILLS);
+        database.execSQL(DROP_TABLE_EXPENSE);
     }
 
     public void recreateTables() {
         SQLiteDatabase database = this.getWritableDatabase();
 
-        database.execSQL(Bill.DROP_TABLE_BILLS);
-        database.execSQL(Expense.DROP_TABLE_EXPENSE);
+        database.execSQL(DROP_TABLE_BILLS);
+        database.execSQL(DROP_TABLE_EXPENSE);
 
-        database.execSQL(Bill.CREATE_TABLE_BILLS);
-        database.execSQL(Expense.CREATE_TABLE_EXPENSES);
+        database.execSQL(CREATE_TABLE_BILLS);
+        database.execSQL(CREATE_TABLE_EXPENSES);
     }
 
     /**
@@ -52,14 +98,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Bill.COLUMN_BILL_NAME, name);
-        contentValues.put(Bill.COLUMN_BILL_COST, cost);
-        contentValues.put(Bill.COLUMN_BILL_FUND, fund);
-        contentValues.put(Bill.COLUMN_BILL_DUE, due);
-        contentValues.put(Bill.COLUMN_BILL_PAID, paid);
+        contentValues.put(COLUMN_BILL_NAME, name);
+        contentValues.put(COLUMN_BILL_COST, cost);
+        contentValues.put(COLUMN_BILL_FUND, fund);
+        contentValues.put(COLUMN_BILL_DUE, due);
+        contentValues.put(COLUMN_BILL_PAID, paid);
 
         //Id of inserted row, if Id equals -1 then an error occurred on insert
-        long billId = database.insert(Bill.BILLS_TABLE_NAME, null, contentValues);
+        long billId = database.insert(BILLS_TABLE_NAME, null, contentValues);
         database.close();
 
         return billId;
@@ -71,19 +117,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public List<Bill> getAllBills() {
         List<Bill> bills = new ArrayList<>();
-        String selectAllBills = "SELECT * FROM " + Bill.BILLS_TABLE_NAME;
+        String selectAllBills = "SELECT * FROM " + BILLS_TABLE_NAME;
         SQLiteDatabase database = this.getReadableDatabase();
         Cursor cursor = database.rawQuery(selectAllBills, null);
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 Bill bill = new Bill(
-                        cursor.getInt(cursor.getColumnIndex(Bill.COLUMN_BILL_ID)),
-                        cursor.getString(cursor.getColumnIndex(Bill.COLUMN_BILL_NAME)),
-                        cursor.getDouble(cursor.getColumnIndex(Bill.COLUMN_BILL_COST)),
-                        cursor.getDouble(cursor.getColumnIndex(Bill.COLUMN_BILL_FUND)),
-                        cursor.getString(cursor.getColumnIndex(Bill.COLUMN_BILL_DUE)),
-                        cursor.getInt(cursor.getColumnIndex(Bill.COLUMN_BILL_PAID))
+                        cursor.getInt(cursor.getColumnIndex(COLUMN_BILL_ID)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_BILL_NAME)),
+                        cursor.getDouble(cursor.getColumnIndex(COLUMN_BILL_COST)),
+                        cursor.getDouble(cursor.getColumnIndex(COLUMN_BILL_FUND)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_BILL_DUE)),
+                        cursor.getInt(cursor.getColumnIndex(COLUMN_BILL_PAID))
                 );
 
                 bills.add(bill);
@@ -106,13 +152,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Bill.COLUMN_BILL_NAME, bill.getName());
-        contentValues.put(Bill.COLUMN_BILL_COST, bill.getCost());
-        contentValues.put(Bill.COLUMN_BILL_FUND, bill.getFund());
-        contentValues.put(Bill.COLUMN_BILL_DUE, bill.getDue());
-        contentValues.put(Bill.COLUMN_BILL_PAID, bill.getPaid());
+        contentValues.put(COLUMN_BILL_NAME, bill.getName());
+        contentValues.put(COLUMN_BILL_COST, bill.getCost());
+        contentValues.put(COLUMN_BILL_FUND, bill.getFund());
+        contentValues.put(COLUMN_BILL_DUE, bill.getDue());
+        contentValues.put(COLUMN_BILL_PAID, bill.getPaid());
 
-        return database.update(Bill.BILLS_TABLE_NAME, contentValues, Bill.COLUMN_BILL_ID + " = ?",
+        return database.update(BILLS_TABLE_NAME, contentValues, COLUMN_BILL_ID + " = ?",
                 new String[] { String.valueOf(bill.getId()) } );
     }
 
@@ -124,7 +170,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int deleteBill(Bill bill) {
         SQLiteDatabase database = this.getWritableDatabase();
 
-        return database.delete(Bill.BILLS_TABLE_NAME, Bill.COLUMN_BILL_ID + " = ?",
+        return database.delete(BILLS_TABLE_NAME, COLUMN_BILL_ID + " = ?",
                 new String[] { String.valueOf(bill.getId()) } );
     }
 
@@ -140,13 +186,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Expense.COLUMN_EXPENSE_NAME, name);
-        contentValues.put(Expense.COLUMN_EXPENSE_SPENT, spent);
-        contentValues.put(Expense.COLUMN_EXPENSE_LIMIT, limit);
-        contentValues.put(Expense.COLUMN_EXPENSE_TYPE, type);
+        contentValues.put(COLUMN_EXPENSE_NAME, name);
+        contentValues.put(COLUMN_EXPENSE_SPENT, spent);
+        contentValues.put(COLUMN_EXPENSE_LIMIT, limit);
+        contentValues.put(COLUMN_EXPENSE_TYPE, type);
 
         //Id of inserted row, if Id equals -1 then an error occurred on insert
-        long expenseId = database.insert(Expense.EXPENSES_TABLE_NAME, null, contentValues);
+        long expenseId = database.insert(EXPENSES_TABLE_NAME, null, contentValues);
         database.close();
 
         return expenseId;
@@ -158,7 +204,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public List<Expense> getAllExpenses() {
         List<Expense> expenses = new ArrayList<>();
-        String selectAllExpenses = "SELECT * FROM " + Expense.EXPENSES_TABLE_NAME;
+        String selectAllExpenses = "SELECT * FROM " + EXPENSES_TABLE_NAME;
 
         SQLiteDatabase database = this.getReadableDatabase();
         Cursor cursor = database.rawQuery(selectAllExpenses, null);
@@ -166,11 +212,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 Expense expense = new Expense(
-                        cursor.getInt(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_ID)),
-                        cursor.getString(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_NAME)),
-                        cursor.getDouble(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_SPENT)),
-                        cursor.getDouble(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_LIMIT)),
-                        cursor.getString(cursor.getColumnIndex(Expense.COLUMN_EXPENSE_TYPE))
+                        cursor.getInt(cursor.getColumnIndex(COLUMN_EXPENSE_ID)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_EXPENSE_NAME)),
+                        cursor.getDouble(cursor.getColumnIndex(COLUMN_EXPENSE_SPENT)),
+                        cursor.getDouble(cursor.getColumnIndex(COLUMN_EXPENSE_LIMIT)),
+                        cursor.getString(cursor.getColumnIndex(COLUMN_EXPENSE_TYPE))
                 );
 
                 expenses.add(expense);
@@ -193,12 +239,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Expense.COLUMN_EXPENSE_NAME, expense.getName());
-        contentValues.put(Expense.COLUMN_EXPENSE_SPENT, expense.getSpent());
-        contentValues.put(Expense.COLUMN_EXPENSE_LIMIT, expense.getLimit());
-        contentValues.put(Expense.COLUMN_EXPENSE_TYPE, expense.getType());
+        contentValues.put(COLUMN_EXPENSE_NAME, expense.getName());
+        contentValues.put(COLUMN_EXPENSE_SPENT, expense.getSpent());
+        contentValues.put(COLUMN_EXPENSE_LIMIT, expense.getLimit());
+        contentValues.put(COLUMN_EXPENSE_TYPE, expense.getType());
 
-        return database.update(Expense.EXPENSES_TABLE_NAME, contentValues, Expense.COLUMN_EXPENSE_ID + " = ?",
+        return database.update(EXPENSES_TABLE_NAME, contentValues, COLUMN_EXPENSE_ID + " = ?",
                 new String[] { String.valueOf(expense.getId()) } );
     }
 
@@ -210,7 +256,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int deleteExpense(Expense expense) {
         SQLiteDatabase database = this.getWritableDatabase();
 
-        return database.delete(Expense.EXPENSES_TABLE_NAME, Expense.COLUMN_EXPENSE_ID + " = ?",
+        return database.delete(EXPENSES_TABLE_NAME, COLUMN_EXPENSE_ID + " = ?",
                 new String[] { String.valueOf(expense.getId()) } );
     }
 }
